@@ -2481,8 +2481,6 @@ def read_options(cmdlineargs, environment):
     optvalues.protocol_version = option_with_default(configs.getint, 'protocol_version', 'protocol_version', DEFAULT_PROTOCOL_VERSION)
     optvalues.execute = None
 
-    print optvalues
-
     (options, arguments) = parser.parse_args(cmdlineargs, values=optvalues)
 
     hostname = option_with_default(configs.get, 'connection', 'hostname', DEFAULT_HOST)
@@ -2499,6 +2497,12 @@ def read_options(cmdlineargs, environment):
     except ValueError:
         parser.error('"%s" is not a valid request timeout.' % (options.request_timeout,))
         options.request_timeout = DEFAULT_REQUEST_TIMEOUT_SECONDS
+
+    try:
+        options.protocol_version = int(options.protocol_version)
+    except ValueError:
+        parser.error('"%s" is not a valid protocol version.' % (options.protocol_version,))
+        options.protocol_version = DEFAULT_PROTOCOL_VERSION 
 
     hostname = environment.get('CQLSH_HOST', hostname)
     port = environment.get('CQLSH_PORT', port)
